@@ -4,12 +4,26 @@ use std::cmp::Ordering;
 use rand::Rng;
 
 fn main() {
-    println!("Guess the number!");
+    println!("\n=== GUESS THE NUMBER ===");
 
-    let secret_number = rand::thread_rng().gen_range(1..=100);
+    let max_limit: u32 = 100;
+    let mut guesses = (max_limit as f32).log2().ceil() as i32;
+
+    println!("The secret number is between 1 and {max_limit}");
+    println!("You can only guess {guesses} times!!");
+
+    let secret_number = rand::thread_rng().gen_range(1..=max_limit);
     
     loop {
-        print!("\nPlease input your guess: ");
+        match guesses.cmp(&0) {
+            Ordering::Equal => {
+                println!("\nSorry, you ran out of guesses!");
+                break;
+            },
+            _ => println!("\nGuesses remaining {guesses}"),
+        };
+
+        print!("Please input your guess: ");
         io::stdout().flush().unwrap();
 
         let mut guess = String::new();
@@ -33,7 +47,9 @@ fn main() {
                 break;
             }
         }
+
+        guesses -= 1;
     }
 
-
+    println!("\nThank you for playing my guessing game!");
 }
